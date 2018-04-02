@@ -4,43 +4,57 @@ import logo from './logo.svg';
 import './SudokuGame.css';
 
 
-function Square(props) {
-  return (
-    <input className="square" onInput={() => this.props.onInputChange}>
-      {props.value}
-    </input>
-  );
+class Square extends Component {
+
+  render() {
+
+    const i = this.props.value_i;
+    const j = this.props.value_j;
+
+    return (
+      <input className="square" value={this.props.grid[i][j]}  onInput={this.props.onInput}></input>
+    );
+
+  }
 }
 
 
 class BoxOfSquares extends Component {
 
-  renderSquare() {
+  renderSquare(i, j) {
     return (
-      <Square className='square'/>
+      <Square className='square' 
+              onInput={this.props.onInput}
+              grid={this.props.grid}
+              value_i = {i}
+              value_j = {j}
+      />
     );
   }
   
   render() {
+
+    const i = this.props.value;
+
     return (
 
-      <div>
+      <div className='boxOfSquares'>
         <div className="squares-row">
-          {this.renderSquare()}
-          {this.renderSquare()}
-          {this.renderSquare()}
+          {this.renderSquare(i, 0)}
+          {this.renderSquare(i, 1)}
+          {this.renderSquare(i, 2)}
         </div>
 
         <div className="squares-row">
-          {this.renderSquare()}
-          {this.renderSquare()}
-          {this.renderSquare()}
+          {this.renderSquare(i, 3)}
+          {this.renderSquare(i, 4)}
+          {this.renderSquare(i, 5)}
         </div>
 
         <div className="squares-row">
-          {this.renderSquare()}
-          {this.renderSquare()}
-          {this.renderSquare()}
+          {this.renderSquare(i, 6)}
+          {this.renderSquare(i, 7)}
+          {this.renderSquare(i, 8)}
         </div>
       </div>
 
@@ -55,40 +69,50 @@ class Board extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      squares: Array(9).fill(Array(9).fill(null)),
+      grid: Array(9).fill(Array(9).fill(1)),
+      value: ''
     };
   }
 
-  renderBoxOfSquares() {
+  renderBoxOfSquares(i) {
     return(
-      <BoxOfSquares />
+      <BoxOfSquares 
+        onInput={() => this.handleInputChange()}
+        grid={this.state.grid}
+        value={i}
+      />
     );
   }
 
-  handleInputChange() {
-    {alert('changed input')}
+  handleInputChange(event) {
+    const grid = this.state.grid.slice();
+    // squares[i][j] =
+    // this.setState({
+    //   grid: 
+    // });
+    alert(event)
   }
 
   render(){
     return (
 
-      <div>
+      <div className='board'>
         <div className='boxOfSquares-row'>
-          {this.renderBoxOfSquares()}
-          {this.renderBoxOfSquares()}
-          {this.renderBoxOfSquares()}
+          {this.renderBoxOfSquares(0)}
+          {this.renderBoxOfSquares(1)}
+          {this.renderBoxOfSquares(2)}
         </div>
 
         <div className='boxOfSquares-row'>
-          {this.renderBoxOfSquares()}
-          {this.renderBoxOfSquares()}
-          {this.renderBoxOfSquares()}
+          {this.renderBoxOfSquares(3)}
+          {this.renderBoxOfSquares(4)}
+          {this.renderBoxOfSquares(5)}
         </div>
 
         <div className='boxOfSquares-row'>
-          {this.renderBoxOfSquares()}
-          {this.renderBoxOfSquares()}
-          {this.renderBoxOfSquares()}
+          {this.renderBoxOfSquares(6)}
+          {this.renderBoxOfSquares(7)}
+          {this.renderBoxOfSquares(8)}
         </div>
       </div>
 

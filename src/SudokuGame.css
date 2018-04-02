@@ -28,18 +28,26 @@
 }
 
 .boxOfSquares {
+  display: inline-block;
+  border: 1px solid black;
+}
+
+.boxOfSquares-row {
   border: 1 solid black;
   width: auto;
   height: auto;
+  display: block;
 }
 
 .board {
+  margin:auto;
   width: auto;
   height: auto;
 }
 
 .square {
-  width: auto;
-  height: auto;
+  width: 20px;
+  height: 20px;
+  margin: 2px;
 }
 
