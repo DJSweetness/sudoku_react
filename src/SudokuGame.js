@@ -12,7 +12,7 @@ class Square extends Component {
     const j = this.props.value_j;
 
     return (
-      <input className="square" value={this.props.grid[i][j]}  onInput={this.props.onInput}></input>
+      <input className="square" onInput={(e) => this.props.onInput(i, j, e)}></input>
     );
 
   }
@@ -21,7 +21,7 @@ class Square extends Component {
 
 class BoxOfSquares extends Component {
 
-  renderSquare(i, j) {
+  renderSquare(i, j, e) {
     return (
       <Square className='square' 
               onInput={this.props.onInput}
@@ -37,7 +37,6 @@ class BoxOfSquares extends Component {
     const i = this.props.value;
 
     return (
-
       <div className='boxOfSquares'>
         <div className="squares-row">
           {this.renderSquare(i, 0)}
@@ -63,13 +62,101 @@ class BoxOfSquares extends Component {
 
 }
 
+function checkBoard(grid) 
+{
+
+    let i,j,k,l;
+    let rowsChecked = Array(9).fill(0);
+    let colsChecked = Array(9).fill(0);
+    let blocksChecked = Array(9).fill(0);
+    
+    let numBlocks = 9;
+
+    // // ~ Check blocks ~ //
+    // // for each block...
+    // for(i=0;i<9;i++)
+    // {
+    //   // for each value in block...
+    //   for(j=0;j<9;j++)
+    //   {
+    //     //set corresponding index of number to 1, meaning we have that number
+    //     //We subtract by 1 because our indexes are 0-8 instead of the numbers
+    //     //in sudoku which are 1-9.
+    //     blocksChecked[grid[i][j]-1] = 1;
+    //   }
+      
+    //   // if a 0, then it's failed the test already.
+    //   if (blocksChecked.includes(0)) {
+    //     return Array('Error block', i);
+    //   }
+      
+    //   blocksChecked.fill(0);
+    // }
+    
+    // ~ Check rows ~ //
+    let row = 0;
+    for(i=0;i<3;i++)
+    {
+      for(j=0;j<3;j++)
+      {
+        for(k=0;k<3;k++)
+        {
+          for(l=0;l<3;l++)
+          {
+            if (rowsChecked[ grid[k+(i*3)][l+(j*3)] - 1 ] == 1)
+            {
+              return Array(k, i*3, l, j*3);
+            }
+            else
+            {
+              rowsChecked[ grid[k+(i*3)][l+(j*3)] - 1 ] = 1; 
+            }
+          }
+        }
+        
+        if (rowsChecked.includes(0)) {
+          return Array('Error block', row, rowsChecked);
+        }
+        row++;
+        rowsChecked.fill(0);
+        
+      }
+    }
+    
+    // ~ Check columns ~ //
+    for(i=0;i<3;i++)
+    {
+      for(j=0;j<3;j++)
+      {
+        for(k=0;k<3;k++)
+        {
+          for(l=0;l<3;l++)
+          {
+            colsChecked[ grid[k*3+i][l*3+j] - 1 ] = 1;
+          }
+        }
+        
+        // if a 0, then it's failed the test already.
+        if (colsChecked.includes(0)) {
+          return Array('Error col', i, j);
+        }
+        
+        colsChecked.fill(0);
+        
+      }
+    }
+    
+    return Array('You Win!');
+}
+
 
 class Board extends Component {
 
   constructor(props) {
     super(props);
+    this.handleInputChange = this.handleInputChange.bind(this);
     this.state = {
-      grid: Array(9).fill(Array(9).fill(1)),
+      grid: Array(9).fill(Array(9).fill(-1)),
       value: ''
     };
   }
@@ -77,25 +164,23 @@ class Board extends Component {
   renderBoxOfSquares(i) {
     return(
       <BoxOfSquares 
-        onInput={() => this.handleInputChange()}
+        onInput={this.handleInputChange}
         grid={this.state.grid}
         value={i}
       />
     );
   }
 
-  handleInputChange(event) {
-    const grid = this.state.grid.slice();
-    // squares[i][j] =
-    // this.setState({
-    //   grid: 
-    // });
-    alert(event)
+  handleInputChange = (i,j,e) => {
+    
+    this.state.grid[i][j] = e.target.value;
+    console.log(checkBoard(this.state.grid));
+
   }
 
   render(){
+    
     return (
-
       <div className='board'>
         <div className='boxOfSquares-row'>
           {this.renderBoxOfSquares(0)}
