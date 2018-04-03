@@ -52,3 +52,14 @@
   margin: 2px;
 }
 
+.getMistake, .checkBoard {
+  margin: 10px;
+}
+
+.getMistake {
+  color: red;
+}
+
+.checkBoard {
+  color: green;
+}
