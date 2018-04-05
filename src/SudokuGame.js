@@ -360,13 +360,21 @@ function startPuzzle() {
 
   while (chooseFromThis.length) {
 
-    i = (Math.floor(Math.random() * 8) + 1);
-    j = (Math.floor(Math.random() * 8) + 1);
+    i = (Math.floor(Math.random() * 9));
+    j = (Math.floor(Math.random() * 9));
 
     element = document.getElementById('square_'+i+'_'+j);
-    element.value = chooseFromThis.splice(Math.floor(Math.random()*chooseFromThis.length), 1);
+
+    // for some reason, the element was null and the values of i and j were
+    // credible, but this makes it work :D
+    try {
+      element.value = chooseFromThis.splice(Math.floor(Math.random()*chooseFromThis.length), 1);
+    } catch(error){
+      continue;
+    }
     element.setAttribute('readonly', true);
-    element.style.fontWeight = 'bold';
+    element.setAttribute('id', 'answer');
+    element.setAttribute('class', 'answer');
     if (chooseFromThis.length === 0 ) {
       return;
     }
@@ -375,7 +383,29 @@ function startPuzzle() {
 }
 
 function solvePuzzle() {
-  
+
+  let i,j,k,l,m;
+
+  // initially fill puzzle
+  for(i=0;i<9;i++) {
+    for(j=0;j<9;j++) {
+
+    }
+  }
+
+  for(i=0;i<9;i++) {
+    for(j=0;j<9;j++) { // for each column
+      for(k=0;k<9;k++) { // for each row
+        for(l=0;l<9;l++) { // foreach value possible
+          for(m=1;m<10;m++) {
+
+          }
+          
+        }
+      }
+    }
+  }
+
 }
 
 class SudokuGame extends Component {
