@@ -150,6 +150,7 @@ class Board extends Component {
     this.handleBoardCheck = this.handleBoardCheck.bind(this);
     this.clearRed = this.clearRed.bind(this);
     this.makeEverythingGreen = this.makeEverythingGreen.bind(this);
+    this.startPuzzle = this.startPuzzle.bind(this);
 
     let grid = [];
     for(let i=0; i<9; i++)
@@ -165,8 +166,40 @@ class Board extends Component {
   }
 
   componentDidMount() {
-    startPuzzle()
+    this.startPuzzle()
   }
+
+  startPuzzle() {
+
+  let chooseFromThis = [1,2,3,4,5,6,7,8,9];
+  let i,j;
+  let element, randomValue;
+
+  while (chooseFromThis.length) {
+
+    i = (Math.floor(Math.random() * 9));
+    j = (Math.floor(Math.random() * 9));
+    randomValue = chooseFromThis.splice(Math.floor(Math.random()*chooseFromThis.length), 1);
+
+    element = document.getElementById('square_'+i+'_'+j);
+    const grid = this.state.grid.slice();
+    grid[i][j] = randomValue
+    this.setState({grid:grid});
+    // for some reason, the element was null and the values of i and j were
+    // credible, but this makes it work :D
+    try {
+      element.value = randomValue;
+    } catch(error){
+      continue;
+    }
+    element.setAttribute('readonly', true);
+    element.setAttribute('class', 'answer');
+    if (chooseFromThis.length === 0 ) {
+      return;
+    }
+  }
+
+}
 
   renderBoxOfSquares(i) {
     return(
@@ -352,36 +385,6 @@ class Board extends Component {
   }
 }
 
-function startPuzzle() {
-
-  let chooseFromThis = [1,2,3,4,5,6,7,8,9];
-  let i,j;
-  let element;
-
-  while (chooseFromThis.length) {
-
-    i = (Math.floor(Math.random() * 9));
-    j = (Math.floor(Math.random() * 9));
-
-    element = document.getElementById('square_'+i+'_'+j);
-
-    // for some reason, the element was null and the values of i and j were
-    // credible, but this makes it work :D
-    try {
-      element.value = chooseFromThis.splice(Math.floor(Math.random()*chooseFromThis.length), 1);
-    } catch(error){
-      continue;
-    }
-    element.setAttribute('readonly', true);
-    element.setAttribute('id', 'answer');
-    element.setAttribute('class', 'answer');
-    if (chooseFromThis.length === 0 ) {
-      return;
-    }
-  }
-
-}
-
 function solvePuzzle() {
 
   let i,j,k,l,m;
@@ -389,7 +392,8 @@ function solvePuzzle() {
   // initially fill puzzle
   for(i=0;i<9;i++) {
     for(j=0;j<9;j++) {
-
+      if (true)
+        ;
     }
   }
 
