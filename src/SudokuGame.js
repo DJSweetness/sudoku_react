@@ -92,7 +92,7 @@ class Square extends Component {
     const j = this.props.value_j;
 
     return (
-      <input className="square" onInput={(e) => this.props.onInput(i, j, e)}></input>
+      <input id={'square_'+i+'_'+j} className="square" onInput={(e) => this.props.onInput(i, j, e)}></input>
     );
 
   }
@@ -116,20 +116,20 @@ class BoxOfSquares extends Component {
     const i = this.props.value;
 
     return (
-      <div className='boxOfSquares'>
-        <div className="squares-row">
+      <div id={'block_'+i} className='boxOfSquares'>
+        <div id={'row_'+i+'_0'} className="squares-row">
           {this.renderSquare(i, 0)}
           {this.renderSquare(i, 1)}
           {this.renderSquare(i, 2)}
         </div>
         
-        <div className="squares-row">
+        <div id={'row_'+i+'_1'} className="squares-row">
           {this.renderSquare(i, 3)}
           {this.renderSquare(i, 4)}
           {this.renderSquare(i, 5)}
         </div>
 
-        <div className="squares-row">
+        <div id={'row_'+i+'_2'} className="squares-row">
           {this.renderSquare(i, 6)}
           {this.renderSquare(i, 7)}
           {this.renderSquare(i, 8)}
@@ -148,6 +148,9 @@ class Board extends Component {
     super(props);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleBoardCheck = this.handleBoardCheck.bind(this);
+    this.clearRed = this.clearRed.bind(this);
+    this.makeEverythingGreen = this.makeEverythingGreen.bind(this);
+
     let grid = [];
     for(let i=0; i<9; i++)
     {
@@ -156,8 +159,13 @@ class Board extends Component {
     this.state = {
       grid: grid,
       checkBoardResult: '',
-      value: ''
+      value: '',
+      madeRed: ''
     };
+  }
+
+  componentDidMount() {
+    startPuzzle()
   }
 
   renderBoxOfSquares(i) {
@@ -168,26 +176,134 @@ class Board extends Component {
       />
     );
   }
+
+  makeEverythingGreen() {
+    for(let i=0;i<9;i++) {
+      document.getElementById('block_'+i).style.color = 'green';
+    }
+  }
+
+  clearRed() {
+
+    // clear error in block
+    if (this.state.madeRed.includes('block')) {
+
+      // clear that block
+      document.getElementById(this.state.madeRed).style.color = 'black';
+    }
+
+    //clear error in row
+    else if (this.state.madeRed.includes('row')) {
+
+      //clear that row
+      let row = this.state.madeRed.substring(4,);
+      let rowOfBoxesStart = 0;
+
+      //if row is 0,1,2 then we will be in blocks 0,1,2
+      if (row > 3 && row < 6) {
+        rowOfBoxesStart = 3;
+      }
+      if (row > 5) {
+        rowOfBoxesStart = 6;
+      }
+
+      // thus here, we can cycle each block and change the respective row
+      for(let i=rowOfBoxesStart; i<rowOfBoxesStart+3; i++) {
+        let id = 'row_'+i+'_'+row;
+        document.getElementById(id).style.color = 'black';
+      }
+    }
+
+    // clear error in col
+    else if (this.state.madeRed.includes('col')) {
+
+      let col = this.state.madeRed.substring(4,);
+      let colOfBoxesStart = 0;
+      let square_id = col % 3;
+
+      //if col is 0,1,2 then we will be in blocks 0,1,2
+      if (col > 3 && col < 6) {
+        colOfBoxesStart = 1;
+      }
+      if (col > 5) {
+        colOfBoxesStart = 2;
+      }
+
+      // thus here, we can cycle each block and change the respective row
+      for(let i=colOfBoxesStart; i<9; i+=3) {
+        for(let j=square_id; j<9; j+=3) {
+
+          document.getElementById('square_'+i+'_'+j ).style.color = 'black';
+        }
+      }
+    }
+
+    this.setState({madeRed: ''}); // no long have red
+  }
   
   handleBoardCheck() {
     
     const checkBoardResult = this.state.checkBoardResult.slice();
     
-    if (checkBoardResult[0] === 'Error block')
-    {
-      console.log('Error block: ' + checkBoardResult[1]);
+    if (checkBoardResult[0] === 'Error block') {
+
+      //make the block red and the subclasses will inherit the color
+      document.getElementById('block_'+checkBoardResult[1]).style.color = 'red';
+
+      this.setState({madeRed: 'block_'+checkBoardResult[1]})
     }
-    else if (checkBoardResult[0] === 'Error row')
-    {
-      console.log('Error row: ' + checkBoardResult[1]);
+
+    else if (checkBoardResult[0] === 'Error row') {
+
+      let row = checkBoardResult[1];
+      let rowOfBoxesStart = 0;
+
+      //if row is 0,1,2 then we will be in blocks 0,1,2
+      if (row > 3 && row < 6) {
+        rowOfBoxesStart = 3;
+      }
+      if (row > 5) {
+        rowOfBoxesStart = 6;
+      }
+
+      // thus here, we can cycle each block and change the respective row
+      for(let i=rowOfBoxesStart; i<rowOfBoxesStart+3; i++) {
+        document.getElementById('row_'+i+'_'+row).style.color = 'red';
+      }
+
+      this.setState({madeRed: 'row_'+row});
     }
-    else if (checkBoardResult[0] === 'Error col')
-    {
-      console.log('Error col: ' + checkBoardResult[1]);
+
+    else if (checkBoardResult[0] === 'Error col') {
+
+      let col = checkBoardResult[1];
+      let colOfBoxesStart = 0;
+      let square_id = col % 3;
+
+      //if col is 0,1,2 then we will be in blocks 0,1,2
+      if (col > 3 && col < 6) {
+        colOfBoxesStart = 1;
+      }
+      if (col > 5) {
+        colOfBoxesStart = 2;
+      }
+
+      // thus here, we can cycle each block and change the respective row
+      for(let i=colOfBoxesStart; i<9; i+=3) {
+        for(let j=square_id; j<9; j+=3) {
+
+          document.getElementById('square_'+i+'_'+j ).style.color = 'red';
+        }
+      }
+
+      this.setState({madeRed: 'col_'+col});
     }
-    else if (checkBoardResult[0] === 'You Win!')// winner
-    {
-      console.log('You Win!');
+
+    else if (checkBoardResult[0] === 'You Win!') {
+
+      this.makeEverythingGreen();
+      document.getElementById('checkBoardButton').style.display = 'none';
+      document.getElementById('win').style.display = 'block';
     }
       
   }
@@ -200,10 +316,14 @@ class Board extends Component {
 
     this.setState({checkBoardResult: checkBoard(this.state.grid)});
 
+    // clear the errors if new input
+    if (this.state.madeRed != '') {
+      this.clearRed();
+    }
+
   }
 
-  render(){
-    
+  render() { 
     return (
       <div>
         <div className='board'>
@@ -225,13 +345,38 @@ class Board extends Component {
             {this.renderBoxOfSquares(8)}
           </div>
         </div>
-        <button className='checkBoardButton' onClick={this.handleBoardCheck}>Check Solution</button>  
+        <button id='checkBoardButton' className='checkBoardButton' onClick={this.handleBoardCheck}>Check Solution</button>
+        <div id='win'>You Win!</div>
       </div>
-
     );
   }
 }
 
+function startPuzzle() {
+
+  let chooseFromThis = [1,2,3,4,5,6,7,8,9];
+  let i,j;
+  let element;
+
+  while (chooseFromThis.length) {
+
+    i = (Math.floor(Math.random() * 8) + 1);
+    j = (Math.floor(Math.random() * 8) + 1);
+
+    element = document.getElementById('square_'+i+'_'+j);
+    element.value = chooseFromThis.splice(Math.floor(Math.random()*chooseFromThis.length), 1);
+    element.setAttribute('readonly', true);
+    element.style.fontWeight = 'bold';
+    if (chooseFromThis.length === 0 ) {
+      return;
+    }
+  }
+
+}
+
+function solvePuzzle() {
+  
+}
 
 class SudokuGame extends Component {
 
@@ -259,5 +404,5 @@ class SudokuGame extends Component {
 
 }
 
-
 export default SudokuGame;
+

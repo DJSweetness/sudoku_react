@@ -66,3 +66,10 @@
 .checkBoardButton {
   color: green;
 }
+
+#win {
+  color: green;
+  font-weight: bold;
+  font-size: 100px;
+  display: none;
+}
