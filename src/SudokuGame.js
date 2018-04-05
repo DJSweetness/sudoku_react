@@ -84,34 +84,6 @@ function checkBoard(grid)
 }
 
 
-function getMistake(checkBoardResult)
-{
-
-  if (checkBoardResult[0] === 'Error block')
-  {
-    console.log('Error block');
-  }
-  else if (checkBoardResult[0] === 'Error row')
-  {
-    console.log('Error row');
-  }
-  else if (checkBoardResult[0] === 'Error col')
-  {
-    console.log('Error col');
-  }
-  else if (checkBoardResult[0] === 'You Win!')// winner
-  {
-
-  }
-
-}
-
-
-function checkIfSolved(checkBoardResult)
-{
-
-}
-
 class Square extends Component {
 
   render() {
@@ -150,7 +122,7 @@ class BoxOfSquares extends Component {
           {this.renderSquare(i, 1)}
           {this.renderSquare(i, 2)}
         </div>
-
+        
         <div className="squares-row">
           {this.renderSquare(i, 3)}
           {this.renderSquare(i, 4)}
@@ -175,6 +147,7 @@ class Board extends Component {
   constructor(props) {
     super(props);
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleBoardCheck = this.handleBoardCheck.bind(this);
     let grid = [];
     for(let i=0; i<9; i++)
     {
@@ -194,6 +167,29 @@ class Board extends Component {
         value={i}
       />
     );
+  }
+  
+  handleBoardCheck() {
+    
+    const checkBoardResult = this.state.checkBoardResult.slice();
+    
+    if (checkBoardResult[0] === 'Error block')
+    {
+      console.log('Error block: ' + checkBoardResult[1]);
+    }
+    else if (checkBoardResult[0] === 'Error row')
+    {
+      console.log('Error row: ' + checkBoardResult[1]);
+    }
+    else if (checkBoardResult[0] === 'Error col')
+    {
+      console.log('Error col: ' + checkBoardResult[1]);
+    }
+    else if (checkBoardResult[0] === 'You Win!')// winner
+    {
+      console.log('You Win!');
+    }
+      
   }
 
   handleInputChange = (i,j,e) => {
@@ -229,8 +225,7 @@ class Board extends Component {
             {this.renderBoxOfSquares(8)}
           </div>
         </div>
-        <button class='getMistake' >Get Mistake</button>
-        <button class='checkBoard' >Check Solution</button>
+        <button className='checkBoardButton' onClick={this.handleBoardCheck}>Check Solution</button>  
       </div>
 
     );

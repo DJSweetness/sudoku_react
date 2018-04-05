@@ -30,6 +30,7 @@
 .boxOfSquares {
   display: inline-block;
   border: 1px solid black;
+  color: black;
 }
 
 .boxOfSquares-row {
@@ -37,6 +38,7 @@
   width: auto;
   height: auto;
   display: block;
+  color: inherit;
 }
 
 .board {
@@ -50,9 +52,10 @@
   width: 20px;
   height: 20px;
   margin: 2px;
+  color: inherit;
 }
 
-.getMistake, .checkBoard {
+.getMistake, .checkBoardButton {
   margin: 10px;
 }
 
@@ -60,6 +63,6 @@
   color: red;
 }
 
-.checkBoard {
+.checkBoardButton {
   color: green;
 }
