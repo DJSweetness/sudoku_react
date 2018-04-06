@@ -171,33 +171,73 @@ class Board extends Component {
 
   startPuzzle() {
 
-  let chooseFromThis = [1,2,3,4,5,6,7,8,9];
-  let i,j;
-  let element, randomValue;
+    let chooseFromThis = [1,2,3,4,5,6,7,8,9];
+    let i,j, k;
+    let element, randomValue;
+    let previous = [];
+    let repeated = 1, changed = 0;
 
-  while (chooseFromThis.length) {
+    // ##
+    // this will ensure we don't overwrite an index with the start puzzle numbers. 
+    // ##
 
-    i = (Math.floor(Math.random() * 9));
-    j = (Math.floor(Math.random() * 9));
-    randomValue = chooseFromThis.splice(Math.floor(Math.random()*chooseFromThis.length), 1);
+    // for each number 1-9...
+    while (chooseFromThis.length) {
 
-    element = document.getElementById('square_'+i+'_'+j);
-    const grid = this.state.grid.slice();
-    grid[i][j] = randomValue
-    this.setState({grid:grid});
-    // for some reason, the element was null and the values of i and j were
-    // credible, but this makes it work :D
-    try {
-      element.value = randomValue;
-    } catch(error){
-      continue;
+      // get random indexes that we will put one of the numbers
+      i = (Math.floor(Math.random() * 9));
+      j = (Math.floor(Math.random() * 9));
+
+      // while the index position is a repeat...
+      while (repeated) {
+
+        // check each previous index we've placed a number at
+        for(k=0;k<previous.length;k++) {
+
+          // if our new random numbers equal the old...
+          if (previous[k][0] === i && previous[k][1] === j) {
+
+            // make new random numbers and indicate that we've changed the values
+            i = (Math.floor(Math.random() * 9));
+            j = (Math.floor(Math.random() * 9));
+            changed = 1;
+          }
+        }
+
+        // if they haven't changed, then we don't have repeat indexes
+        if (changed === 0) {
+          repeated = 0;
+        }
+
+        changed = 0;
+      }
+
+      repeated = 1;
+      previous.push([i,j]); // push our previous index
+
+      // ## end of check index 
+      // ##
+
+      randomValue = chooseFromThis.splice(Math.floor(Math.random()*chooseFromThis.length), 1);
+
+      element = document.getElementById('square_'+i+'_'+j);
+      const grid = this.state.grid.slice();
+      grid[i][j] = randomValue
+      this.setState({grid:grid});
+      
+      // for some reason, the element was null and the values of i and j were
+      // credible, but this makes it work :D
+      try {
+        element.value = randomValue;
+      } catch(error){
+        continue;
+      }
+      element.setAttribute('readonly', true);
+      element.setAttribute('class', 'answer');
+      if (chooseFromThis.length === 0 ) {
+        return;
+      }
     }
-    element.setAttribute('readonly', true);
-    element.setAttribute('class', 'answer');
-    if (chooseFromThis.length === 0 ) {
-      return;
-    }
-  }
 
 }
 
